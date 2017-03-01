@@ -1,0 +1,25 @@
+Benchmark                                         Mode  Cnt      Score      Error  Units
+AlmostFinalBenchmark.testAlmostFinalHandle        avgt   20      1,790 ±    0,046  ns/op
+AlmostFinalBenchmark.testAlmostFinalSupplier      avgt   20  59336,476 ±  526,332  ns/op
+AlmostFinalBenchmark.testDirectConstant           avgt   20      1,771 ±    0,002  ns/op
+AlmostFinalBenchmark.testDirectStatic             avgt   20    170,513 ±    0,230  ns/op
+AlmostFinalBenchmark.testDirectVolatile           avgt   20   2493,282 ±    0,719  ns/op
+AlmostFinalBenchmark.testHandleConstant           avgt   20    170,527 ±    0,268  ns/op
+AlmostFinalBenchmark.testHandleConstantSupplier   avgt   20  58928,252 ± 1215,844  ns/op
+AlmostFinalBenchmark.testHandleMethod             avgt   20      1,772 ±    0,001  ns/op
+AlmostFinalBenchmark.testHandleMethodSupplier     avgt   20      1,775 ±    0,019  ns/op
+AlmostFinalBenchmark.testReturn2                  avgt   20    170,343 ±    0,103  ns/op
+AlmostFinalBenchmark.testReturn5                  avgt   20    170,491 ±    0,317  ns/op
+
+AlmostFinalBenchmark2.testAlmostFinalHandle       avgt   20      1,775 ±    0,007  ns/op
+AlmostFinalBenchmark2.testAlmostFinalSupplier     avgt   20  55809,717 ± 1486,209  ns/op
+AlmostFinalBenchmark2.testDirectConstant          avgt   20      1,774 ±    0,002  ns/op
+AlmostFinalBenchmark2.testDirectStatic            avgt   20      1,874 ±    0,007  ns/op
+AlmostFinalBenchmark2.testDirectVolatile          avgt   20   2509,178 ±    1,438  ns/op
+AlmostFinalBenchmark2.testHandleConstant          avgt   20      1,871 ±    0,001  ns/op
+AlmostFinalBenchmark2.testHandleConstantSupplier  avgt   20  60207,561 ±  661,979  ns/op
+AlmostFinalBenchmark2.testHandleMethod            avgt   20      1,771 ±    0,001  ns/op
+AlmostFinalBenchmark2.testHandleMethodSupplier    avgt   20      1,772 ±    0,001  ns/op
+AlmostFinalBenchmark2.testReturn2                 avgt   20      2,002 ±    0,014  ns/op
+AlmostFinalBenchmark2.testReturn5                 avgt   20      1,996 ±    0,001  ns/op
+
