@@ -6,7 +6,6 @@ import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandleProxies;
 import java.lang.invoke.MethodHandles;
 import java.util.concurrent.TimeUnit;
 import java.util.function.IntSupplier;
@@ -15,15 +14,12 @@ import static java.lang.invoke.MethodHandles.lookup;
 import static java.lang.invoke.MethodType.methodType;
 
 /**
+ * Performance tests for MethodHandles and their lambda counterparts.
+ *
  * Created by kuli on 27.02.17.
  */
-@BenchmarkMode(Mode.AverageTime) @Warmup(iterations = 5) @Fork(value = 1) @OutputTimeUnit(TimeUnit.NANOSECONDS)
-public class AlmostFinalBenchmark {
-
-//    public static void main(String[] args) throws RunnerException {
-//        Options options = new OptionsBuilder().forks(1).threads(1).measurementIterations(10).warmupBatchSize(5).build();
-//        new Runner(options).run();
-//    }
+@BenchmarkMode(Mode.AverageTime) @Warmup(iterations = 5) @Fork(value = 1) @OutputTimeUnit(TimeUnit.NANOSECONDS) @Measurement(iterations = 10)
+public class CheckBooleanBenchmark {
 
     private static final AlmostFinal<Integer> WHAT_TO_ADD = AlmostFinal.forInt(2);
     private static final MethodHandle GETTER_HANDLE = WHAT_TO_ADD.createGetter();
@@ -70,15 +66,13 @@ public class AlmostFinalBenchmark {
         } catch (Throwable t) {
             throw new AssertionError(t);
         }
-
-        System.out.println("Supp 1: " + MethodHandleProxies.isWrapperInstance(GETTER_SUPPLIER) + ", Supp 2: " + MethodHandleProxies.isWrapperInstance(CONSTANT_SUPPLIER) + ", Supp 3: " + MethodHandleProxies.isWrapperInstance(CONSTANT_SUPPLIER_METHOD));
     }
 
     @Benchmark
     public void testDirectConstant(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += CONSTANT;
+            if (CONSTANT < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -87,7 +81,7 @@ public class AlmostFinalBenchmark {
     public void testDirectStatic(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += notConstant;
+            if (notConstant < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -96,7 +90,7 @@ public class AlmostFinalBenchmark {
     public void testDirectVolatile(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += definitelyNotConstant;
+            if (definitelyNotConstant < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -105,7 +99,7 @@ public class AlmostFinalBenchmark {
     public void testHandleConstant(Blackhole blackhole) throws Throwable {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += (int) CONSTANT_GETTER.invokeExact();
+            if ((int) CONSTANT_GETTER.invokeExact() < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -114,7 +108,7 @@ public class AlmostFinalBenchmark {
     public void testHandleConstantSupplier(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += CONSTANT_SUPPLIER.getAsInt();
+            if (CONSTANT_SUPPLIER.getAsInt() < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -123,7 +117,7 @@ public class AlmostFinalBenchmark {
     public void testHandleMethod(Blackhole blackhole) throws Throwable {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += (int) CONSTANT_METHOD.invokeExact();
+            if ((int) CONSTANT_METHOD.invokeExact() < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -132,7 +126,7 @@ public class AlmostFinalBenchmark {
     public void testHandleMethodSupplier(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += CONSTANT_SUPPLIER_METHOD.getAsInt();
+            if (CONSTANT_SUPPLIER_METHOD.getAsInt() < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -141,7 +135,7 @@ public class AlmostFinalBenchmark {
     public void testAlmostFinalHandle(Blackhole blackhole) throws Throwable {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += (int) GETTER_HANDLE.invokeExact();
+            if ((int) GETTER_HANDLE.invokeExact() < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -150,7 +144,7 @@ public class AlmostFinalBenchmark {
     public void testAlmostFinalSupplier(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += GETTER_SUPPLIER.getAsInt();
+            if (GETTER_SUPPLIER.getAsInt() < 2) count++;
         }
         blackhole.consume(count);
     }
@@ -159,7 +153,7 @@ public class AlmostFinalBenchmark {
     public void testReturn2(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += RETURN_2.getAsInt();
+            if (RETURN_2.getAsInt() < 3) count++;
         }
         blackhole.consume(count);
     }
@@ -168,7 +162,7 @@ public class AlmostFinalBenchmark {
     public void testReturn5(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += RETURN_5.getAsInt();
+            if (RETURN_5.getAsInt() < 3) count++;
         }
         blackhole.consume(count);
     }
