@@ -2,6 +2,7 @@ package org.fiolino.benchmark;
 
 import org.fiolino.common.reflection.AlmostFinal;
 import org.fiolino.common.reflection.Methods;
+import org.fiolino.common.reflection.OneTimeRegistryBuilder;
 import org.fiolino.common.reflection.Registry;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
@@ -48,7 +49,6 @@ public class SumUpIntegersBenchmark {
     }
 
     private static final IntSupplier RETURN_2;
-    private static final IntSupplier RETURN_5;
 
     static class MySupplier implements IntSupplier {
 
@@ -61,7 +61,7 @@ public class SumUpIntegersBenchmark {
             } catch (IllegalAccessException | NoSuchMethodException ex) {
                 throw new AssertionError(ex);
             }
-            HANDLE = Registry.buildFor(r, 2).getAccessor();
+            HANDLE = OneTimeRegistryBuilder.createFor(r).getAccessor();
         }
 
         private final int value;
@@ -73,7 +73,7 @@ public class SumUpIntegersBenchmark {
         @Override
         public int getAsInt() {
             try {
-                return (int) HANDLE.invokeExact();
+                return (int) HANDLE.invokeExact(value);
             } catch (RuntimeException | Error e) {
                 throw e;
             } catch (Throwable t) {
@@ -98,7 +98,6 @@ public class SumUpIntegersBenchmark {
         CONSTANT_SUPPLIER_METHOD = Methods.lambdafy(lookup, CONSTANT_METHOD, IntSupplier.class);
 
         RETURN_2 = Methods.lambdafy(lookup, r, IntSupplier.class, 2);
-        RETURN_5 = Methods.lambdafy(lookup, r, IntSupplier.class, 5);
 
         System.out.println("Supp 1: " + MethodHandleProxies.isWrapperInstance(GETTER_SUPPLIER) + ", Supp 2: " + MethodHandleProxies.isWrapperInstance(CONSTANT_SUPPLIER) + ", Supp 3: " + MethodHandleProxies.isWrapperInstance(CONSTANT_SUPPLIER_METHOD));
     }
