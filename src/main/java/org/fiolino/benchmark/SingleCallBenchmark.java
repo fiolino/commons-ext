@@ -19,7 +19,7 @@ import static java.lang.invoke.MethodType.methodType;
  *
  * Created by kuli on 27.02.17.
  */
-@BenchmarkMode(Mode.AverageTime) @Warmup(iterations = 5) @Fork(value = 1) @OutputTimeUnit(TimeUnit.NANOSECONDS) @Measurement(iterations = 10)
+@BenchmarkMode(Mode.AverageTime) @Warmup(iterations = 2) @Fork(value = 1) @OutputTimeUnit(TimeUnit.NANOSECONDS) @Measurement(iterations = 2)
 @State(Scope.Benchmark)
 public class SingleCallBenchmark {
 

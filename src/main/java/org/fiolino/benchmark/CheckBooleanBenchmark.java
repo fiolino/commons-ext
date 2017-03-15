@@ -18,7 +18,7 @@ import static java.lang.invoke.MethodType.methodType;
  *
  * Created by kuli on 27.02.17.
  */
-@BenchmarkMode(Mode.AverageTime) @Warmup(iterations = 5) @Fork(value = 1) @OutputTimeUnit(TimeUnit.NANOSECONDS) @Measurement(iterations = 10)
+@BenchmarkMode(Mode.AverageTime) @Warmup(iterations = 2) @Fork(value = 1) @OutputTimeUnit(TimeUnit.NANOSECONDS) @Measurement(iterations = 2)
 public class CheckBooleanBenchmark {
 
     private static final AlmostFinal<Integer> WHAT_TO_ADD = AlmostFinal.forInt(2);
@@ -32,7 +32,7 @@ public class CheckBooleanBenchmark {
     private static final MethodHandle CONSTANT_GETTER;
     private static final IntSupplier CONSTANT_SUPPLIER;
 
-    private static int getValue() {
+    static int getValue() {
         return 2;
     }
 

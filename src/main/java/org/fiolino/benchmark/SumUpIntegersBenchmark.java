@@ -2,12 +2,14 @@ package org.fiolino.benchmark;
 
 import org.fiolino.common.reflection.AlmostFinal;
 import org.fiolino.common.reflection.Methods;
+import org.fiolino.common.reflection.Registry;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandleProxies;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.IntSupplier;
 
@@ -34,19 +36,53 @@ public class SumUpIntegersBenchmark {
     private static final MethodHandle CONSTANT_GETTER;
     private static final IntSupplier CONSTANT_SUPPLIER;
 
-    private static int getValue() {
+    static int getValue() {
         return 2;
     }
 
     private static final MethodHandle CONSTANT_METHOD;
     private static final IntSupplier CONSTANT_SUPPLIER_METHOD;
 
-    private static int returnParameter(int value) {
+    static int returnParameter(int value) {
         return value;
     }
 
     private static final IntSupplier RETURN_2;
     private static final IntSupplier RETURN_5;
+
+    static class MySupplier implements IntSupplier {
+
+        private static final MethodHandle HANDLE;
+
+        static {
+            MethodHandle r;
+            try {
+                r = lookup().findStatic(SumUpIntegersBenchmark.class, "returnParameter", methodType(int.class, int.class));
+            } catch (IllegalAccessException | NoSuchMethodException ex) {
+                throw new AssertionError(ex);
+            }
+            HANDLE = Registry.buildFor(r, 2).getAccessor();
+        }
+
+        private final int value;
+
+        MySupplier(int value) {
+            this.value = value;
+        }
+
+        @Override
+        public int getAsInt() {
+            try {
+                return (int) HANDLE.invokeExact();
+            } catch (RuntimeException | Error e) {
+                throw e;
+            } catch (Throwable t) {
+                throw new UndeclaredThrowableException(t);
+            }
+        }
+    }
+
+    private static final IntSupplier SUPPLIER_2 = new MySupplier(2);
 
     static {
         MethodHandles.Lookup lookup = lookup();
@@ -179,10 +215,10 @@ public class SumUpIntegersBenchmark {
     }
 
     @Benchmark
-    public void testReturn5(Blackhole blackhole) {
+    public void testRegistry2(Blackhole blackhole) {
         int count = 0;
         for (int i=0; i < 10_000; i++) {
-            count += RETURN_5.getAsInt();
+            count += SUPPLIER_2.getAsInt();
         }
         blackhole.consume(count);
     }
